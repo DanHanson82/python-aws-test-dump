@@ -1,0 +1,27 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+import argparse
+
+from aws_test_dump import DynamoDataDump, DynamoSchemaDump
+
+
+ap = argparse.ArgumentParser()
+ap.add_argument('action')
+ap.add_argument('--table_name', default=None)
+ap.add_argument('--dump_file', default=None)
+args = ap.parse_args()
+
+
+class NotValidOptionError(Exception):
+    pass
+
+
+if args.action == 'schema_dump':
+    processor = DynamoSchemaDump(args.dump_file)
+elif args.action == 'data_dump':
+    processor = DynamoDataDump(args.table_name)
+else:
+    raise NotValidOptionError
+
+processor.run()

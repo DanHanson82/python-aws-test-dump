@@ -1,0 +1,6 @@
+boto3
+moto<1
+pip-tools
+pytest
+pytest-cov
+six

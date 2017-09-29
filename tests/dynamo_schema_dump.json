@@ -1,0 +1,83 @@
+[
+  {
+    "AttributeDefinitions": [
+      {
+        "AttributeName": "some_id",
+        "AttributeType": "S"
+      },
+      {
+        "AttributeName": "user_name",
+        "AttributeType": "S"
+      }
+    ],
+    "KeySchema": [
+      {
+        "AttributeName": "user_name",
+        "KeyType": "HASH"
+      },
+      {
+        "AttributeName": "some_id",
+        "KeyType": "RANGE"
+      }
+    ],
+    "ProvisionedThroughput": {
+      "ReadCapacityUnits": 5,
+      "WriteCapacityUnits": 5
+    },
+    "TableName": "some_table_name"
+  },
+  {
+    "AttributeDefinitions": [
+      {
+        "AttributeName": "another_id",
+        "AttributeType": "S"
+      },
+      {
+        "AttributeName": "user_email",
+        "AttributeType": "S"
+      }
+    ],
+    "KeySchema": [
+      {
+        "AttributeName": "another_id",
+        "KeyType": "HASH"
+      },
+      {
+        "AttributeName": "user_email",
+        "KeyType": "RANGE"
+      }
+    ],
+    "ProvisionedThroughput": {
+      "ReadCapacityUnits": 100,
+      "WriteCapacityUnits": 10
+    },
+    "TableName": "some_other_table"
+  },
+  {
+    "AttributeDefinitions": [
+      {
+        "AttributeName": "last_id",
+        "AttributeType": "S"
+      },
+      {
+        "AttributeName": "some_other_key",
+        "AttributeType": "S"
+      }
+    ],
+    "KeySchema": [
+      {
+        "AttributeName": "last_id",
+        "KeyType": "HASH"
+      },
+      {
+        "AttributeName": "some_other_key",
+        "KeyType": "RANGE"
+      }
+    ],
+    "ProvisionedThroughput": {
+      "ReadCapacityUnits": 5,
+      "WriteCapacityUnits": 5
+    },
+    "TableName": "last_table"
+  }
+]
