@@ -9,7 +9,6 @@ import os
 import sys
 
 import boto3
-from boto3.dynamodb.types import TypeDeserializer
 import six
 
 
@@ -260,7 +259,10 @@ class DynamoDataDump(BaseDynamoProcessor):
                 )
                 dynamo_table_dump.run()
         elif self.table_name:
-            dynamo_table_dump = DynamoTableDump(table_name=self.table_name)
+            dynamo_table_dump = DynamoTableDump(
+                table_name=self.table_name,
+                data_dump_dir=self.data_dump_dir
+            )
             dynamo_table_dump.run()
 
 
@@ -289,7 +291,7 @@ class DynamoTableDataRestore(BaseDynamoProcessor):
         with open(self.file_path, 'r') as fin:
             file_contents = json.loads(fin.read())
         self._table_name = file_contents['table_name']
-        self._data = file_contents['data']
+        self._data = file_contents['data']['Items']
 
     @property
     def table_name(self):
@@ -301,7 +303,7 @@ class DynamoTableDataRestore(BaseDynamoProcessor):
     def data(self):
         if self._data is None:
             self._parse_file()
-        return self._data['Items']
+        return self._data
 
     @property
     def data_dump_definition(self):

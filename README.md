@@ -1,5 +1,14 @@
 # python-aws-test-dump
 
+## !!! WARNING I am not responsible for what happens to your data so enter at your own risk !!!
+
+Generally you will want to do a dump of some production data for fixtures to use in tests and make sure you aren't hitting production when using any of the restore classes or commands.
+
+Take a look at the tests in the project to get an idea how to use for testing.  I'm using moto to mock aws with pytest which is fantastic!
+Apprently I need to update how I'm using it to upgrade though.
+
+This isn't meant to be a backup tool and won't handle large amounts of data.
+
 ## Usage
 
 ### dynamo schema
@@ -46,6 +55,55 @@ os.getcwd(), 'tests/fixtures/dynamo_data_dumps')
 but this can be overridden by passing the argument `--dump_dir`
 
 `aws_test_dump data_dump --dump_dir some/directory --table_name some_table_name`
+
+#### data restore
+
+To restore files, run the following:
+
+```python
+    a = aws_test_dump.DynamoDataRestore()
+    a.run()
+
+    # default dump dir can be overridden here as well
+    a = aws_test_dump.DynamoDataRestore(data_dump_dir='some/directory')
+    a.run()
+```
+
+
+## data dump definition
+You can make entries in the data dump definition which will be located in `tests/data_dump_definition.py` by default but can be overridden by setting the following:
+
+`export DATA_DUMP_DEFINITION_MODULE=some.path.to.a.module`
+
+An example can be seen in the tests which is using the default location.  Here it is again:
+
+```python
+from boto3.dynamodb.conditions import Key
+
+
+DATA_DUMP_DEFINITION = [
+    {
+        'TableName': 'some_table_name',
+        'KeyConditionExpression': Key('user_name').eq('chorizo'),
+        'replace_first': {'user_name': {'S': 'chorizo'}},
+    },
+    {
+        'TableName': 'some_other_table',
+        'KeyConditionExpression': Key('another_id').eq('fake'),
+        'replace_these': {
+            'user_email': {'S': 'dan@dan.com'},
+        },
+        'replace_first': {
+            'another_id': {'S': 'fake'},
+            'customer_id': {'S': 'fake_id'},
+        }
+    }
+]
+```
+
+Entries in replace_first will only be replaced on the first entry and replace_these will replaced on all items.
+KeyConditionExpression will have your boto3 KeyConditionExpression.  See boto docs for more information on this.
+The dump will do a scan of the table if there is no KeyConditionExpression however, I'm not doing any pagination.  This isn't meant to be a backup tool so only handles small amounts of data at the moment.
 
 ## Development
 
