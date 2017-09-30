@@ -10,6 +10,7 @@ ap = argparse.ArgumentParser()
 ap.add_argument('action')
 ap.add_argument('--table_name', default=None)
 ap.add_argument('--dump_file', default=None)
+ap.add_argument('--dump_dir', default=None)
 args = ap.parse_args()
 
 
@@ -20,7 +21,7 @@ class NotValidOptionError(Exception):
 if args.action == 'schema_dump':
     processor = DynamoSchemaDump(args.dump_file)
 elif args.action == 'data_dump':
-    processor = DynamoDataDump(args.table_name)
+    processor = DynamoDataDump(args.table_name, args.dump_dir)
 else:
     raise NotValidOptionError
 

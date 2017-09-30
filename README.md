@@ -32,6 +32,21 @@ import aws_test_dump
 a = aws_test_dump.DynamoSchemaRestore()
 a.run()
 ```
+#### data dump
+
+to dump data from a given table:
+
+`aws_test_dump data_dump --table_name some_table_name`
+
+The default dump directory will be
+
+```python
+os.getcwd(), 'tests/fixtures/dynamo_data_dumps')
+```
+but this can be overridden by passing the argument `--dump_dir`
+
+`aws_test_dump data_dump --dump_dir some/directory --table_name some_table_name`
+
 ## Development
 
 ### Requirements

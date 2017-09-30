@@ -1,0 +1,72 @@
+{
+  "data": {
+    "Count": 3, 
+    "Items": [
+      {
+        "customer_id": {
+          "S": "b591bc85-75c0-4245-baaa-5c16045d113c"
+        }, 
+        "enabled": {
+          "BOOL": true
+        }, 
+        "some_id": {
+          "S": "01af5e18-486b-4443-8678-1e8bc7d57849"
+        }, 
+        "some_value": {
+          "N": "5"
+        }, 
+        "user_name": {
+          "S": "timmy"
+        }
+      }, 
+      {
+        "customer_id": {
+          "S": "b591bc85-75c0-4245-baaa-5c16045d113c"
+        }, 
+        "enabled": {
+          "BOOL": true
+        }, 
+        "some_id": {
+          "S": "09b910a9-9012-4b33-b674-8857cdc9bdce"
+        }, 
+        "some_value": {
+          "N": "5"
+        }, 
+        "user_name": {
+          "S": "timmy"
+        }
+      }, 
+      {
+        "customer_id": {
+          "S": "b591bc85-75c0-4245-baaa-5c16045d113c"
+        }, 
+        "enabled": {
+          "BOOL": true
+        }, 
+        "some_id": {
+          "S": "029869f6-2864-45dc-84d8-c113e704b4e5"
+        }, 
+        "some_value": {
+          "N": "2"
+        }, 
+        "user_name": {
+          "S": "timmy"
+        }
+      }
+    ], 
+    "ResponseMetadata": {
+      "HTTPHeaders": {
+        "connection": "close", 
+        "content-length": "682", 
+        "content-type": "text/plain; charset=utf-8", 
+        "date": "Sat, 30 Sep 2017 06:31:54 GMT", 
+        "server": "Python/HTTPretty", 
+        "status": "200"
+      }, 
+      "HTTPStatusCode": 200, 
+      "RetryAttempts": 0
+    }, 
+    "ScannedCount": 3
+  }, 
+  "table_name": "some_table_name"
+}

@@ -1,11 +1,23 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from copy import deepcopy
+import importlib
 import json
 import os
+import sys
 
 import boto3
 import six
+
+
+data_dump_definition_module = os.environ.get(
+    'DATA_DUMP_DEFINITION_MODULE') or 'tests.data_dump_definition'
+try:
+    test_data_dump_definition = importlib.import_module(data_dump_definition_module)
+    DATA_DUMP_DEFINITION = test_data_dump_definition.DATA_DUMP_DEFINITION
+except ImportError:
+    DATA_DUMP_DEFINITION = []
 
 
 DYNAMO_DEFAULTS = {
@@ -96,7 +108,7 @@ class BaseDynamoData(BaseDynamoProcessor):
     def data_dump_dir(self):
         if self._data_dump_dir is None:
             self._data_dump_dir = os.path.join(
-                os.getcwd(), 'tests/dynamo_data_dumps')
+                os.getcwd(), 'tests/fixtures/dynamo_data_dumps')
         return self._data_dump_dir
 
 
@@ -164,21 +176,22 @@ class DynamoSchemaRestore(BaseDynamoSchema):
 
 class DynamoTableDump(BaseDynamoData):
 
-    def __init__(self, data_dump_definition, data_dump_dir=None, dump_file=None, dynamo_kwargs=None):
+    def __init__(self, data_dump_definition=None, table_name=None, data_dump_dir=None, dump_file=None, dynamo_kwargs=None):
         super(DynamoTableDump, self).__init__(data_dump_dir, dump_file, dynamo_kwargs)
-        self.table_name = data_dump_definition['TableName']
-        self.data_dump_definition = data_dump_definition
-        self._query_results = nil
+        self.data_dump_definition = data_dump_definition or {}
+        self.table_name = self.data_dump_definition.get('TableName') or table_name
+        self._query_results = None
 
     def get_default_dump_file(self):
-        return os.path.join(self.data_dump_dir, self.table_name)
+        return os.path.join(
+            self.data_dump_dir, '{}.json'.format(self.table_name))
 
     def run(self):
         self.dump_data()
 
     def dump_data(self):
         data = {'table_name': self.table_name, 'data': self.query_results}
-        if not os.path.exists(self._data_dump_dir):
+        if not os.path.exists(self.data_dump_dir):
             os.makedirs(self._data_dump_dir)
         with open(self.dump_file, 'wb') as fout:
             json.dump(data, fout, indent=2, sort_keys=True, encoding='utf-8')
@@ -187,29 +200,123 @@ class DynamoTableDump(BaseDynamoData):
         pass
 
     def _scan(self):
-        pass
+        return self.dynamo_client.scan(TableName=self.table_name)
 
     @property
     def query_results(self):
         if self._query_results is None:
-            if self.data_dump_definition['key_conditions']:
+            if self.data_dump_definition.get('key_conditions'):
                 self._query_results = self._query()
             else:
                 self._query_results = self._scan()
         return self._query_results
 
 
-class DynamoTableDataRestore(BaseDynamoProcessor):
-    pass
-
-
-class DynamoDataRestore(BaseDynamoProcessor):
-    pass
-
-
 class DynamoDataDump(BaseDynamoProcessor):
-    pass
+    def __init__(self, table_name=None, data_dump_dir=None, dynamo_kwargs=None):
+        super(DynamoDataDump, self).__init__(None, dynamo_kwargs)
+        self._data_dump_definitions = None
+        self.table_name = table_name
+        self.data_dump_dir = data_dump_dir
 
+    @property
+    def data_dump_definitions(self):
+        if self._data_dump_definitions is None:
+            self._data_dump_definitions = deepcopy(DATA_DUMP_DEFINITION)
+            if self.table_name:
+                self._data_dump_definitions = [
+                    i for i in self._data_dump_definitions
+                    if i.get('TableName') == self.table_name
+                ]
+        return self._data_dump_definitions
+
+    def run(self):
+        if self.data_dump_definitions:
+            for data_dump_definition in self.data_dump_definitions:
+                dynamo_table_dump = DynamoTableDump(
+                    data_dump_definition=data_dump_definition,
+                    data_dump_dir=self.data_dump_dir
+                )
+                dynamo_table_dump.run()
+        elif self.table_name:
+            dynamo_table_dump = DynamoTableDump(table_name=self.table_name)
+            dynamo_table_dump.run()
+
+
+class DynamoTableDataRestore(BaseDynamoProcessor):
+    def __init__(self, file_path, dynamo_kwargs=None):
+        super(DynamoTableDataRestore, self).__init__(None, dynamo_kwargs=dynamo_kwargs)
+        self.file_path = file_path
+        self._table_name = None
+        self._data = None
+        self._data_dump_definition = None
+
+    def run(self):
+        for index, item in enumerate(self.data):
+            replace_first = self.data_dump_definition.get('replace_first')
+            replace_these = self.data_dump_definition.get('replace_these')
+            if index == 0 and replace_first:
+                item.update(replace_first)
+            elif replace_these:
+                item.update(replace_these)
+
+            self.dynamo_client.put_item(
+                TableName=self.table_name, Item=item
+            )
+
+    def _parse_file(self):
+        with open(self.file_path, 'r') as fin:
+            file_contents = json.loads(fin.read())
+        self._table_name = file_contents['table_name']
+        self._data = file_contents['data']['Items']
+
+    @property
+    def table_name(self):
+        if self._table_name is None:
+            self._parse_file()
+        return self._table_name
+
+    @property
+    def data(self):
+        if self._data is None:
+            self._parse_file()
+        return self._data
+
+    @property
+    def data_dump_definition(self):
+        if self._data_dump_definition is None:
+            definition = [
+                i for i in DATA_DUMP_DEFINITION
+                if i.get('table_name') == self.table_name
+            ]
+            if definition:
+                self._data_dump_definition = definition[0]
+            else:
+                self._data_dump_definition = {}
+        return self._data_dump_definition
+
+
+class DynamoDataRestore(BaseDynamoData):
+
+    def __init__(self, data_dump_dir=None, dump_file=None, dynamo_kwargs=None):
+        super(DynamoDataRestore, self).__init__(data_dump_dir, dump_file, dynamo_kwargs)
+        self._data_dump_files = None
+        self.dynamo_kwargs = dynamo_kwargs
+
+    @property
+    def data_dump_files(self):
+        if self._data_dump_files is None:
+            self._data_dump_files = [
+                os.path.join(self.data_dump_dir, f)
+                for f in os.listdir(self.data_dump_dir)
+                if f.endswith('.json')
+            ]
+        return self._data_dump_files
+
+    def run(self):
+        for data_dump_file in self.data_dump_files:
+            dynamo_table_data_restore = DynamoTableDataRestore(data_dump_file, self.dynamo_kwargs)
+            dynamo_table_data_restore.run()
 
 
 class S3Restore(BaseS3Processor):

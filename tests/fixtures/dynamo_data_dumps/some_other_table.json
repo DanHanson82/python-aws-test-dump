@@ -1,0 +1,74 @@
+{
+  "data": {
+    "Count": 2245,
+    "Items": [
+      {
+        "another_id": {
+          "S": "01af5e18-486b-4443-8678-1e8bc7d57849"
+        },
+        "some_value": {
+          "N": "5"
+        },
+        "customer_id": {
+          "S": "b591bc85-75c0-4245-baaa-5c16045d113c"
+        },
+        "enabled": {
+          "BOOL": true
+        },
+        "user_email": {
+          "S": "timmy@tim.com"
+        }
+      },
+      {
+        "another_id": {
+          "S": "029869f6-2864-45dc-84d8-c113e704b4e5"
+        },
+        "some_value": {
+          "N": "2"
+        },
+        "customer_id": {
+          "S": "b591bc85-75c0-4245-baaa-5c16045d113c"
+        },
+        "enabled": {
+          "BOOL": true
+        },
+        "user_email": {
+          "S": "timmy@tim.com"
+        }
+      },
+      {
+        "another_id": {
+          "S": "09b910a9-9012-4b33-b674-8857cdc9bdce"
+        },
+        "some_value": {
+          "N": "5"
+        },
+        "customer_id": {
+          "S": "b591bc85-75c0-4245-baaa-5c16045d113c"
+        },
+        "enabled": {
+          "BOOL": true
+        },
+        "user_email": {
+          "S": "timmy@tim.com"
+        }
+      }
+    ],
+    "ResponseMetadata": {
+      "HTTPHeaders": {
+        "connection": "keep-alive",
+        "content-length": "472431",
+        "content-type": "application/x-amz-json-1.0",
+        "date": "Fri, 29 Sep 2017 23:28:57 GMT",
+        "server": "Server",
+        "x-amz-crc32": "3677635713",
+        "x-amzn-requestid": "K0KAPDCSM245PUFDH2VQDU6847VV4KQNSO5AEMVJF66Q9ASUAAJG"
+      },
+      "HTTPStatusCode": 200,
+      "RequestId": "K0KAPDCSM245PUFDH2VQDU6847VV4KQNSO5AEMVJF66Q9ASUAAJG",
+      "RetryAttempts": 0
+    },
+    "ScannedCount": 2245
+  },
+  "table_name": "some_other_table"
+}
