@@ -5,7 +5,6 @@
 Generally you will want to do a dump of some production data for fixtures to use in tests and make sure you aren't hitting production when using any of the restore classes or commands.
 
 Take a look at the tests in the project to get an idea how to use for testing.  I'm using moto to mock aws with pytest which is fantastic!
-Apprently I need to update how I'm using it to upgrade though.
 
 This isn't meant to be a backup tool and won't handle large amounts of data.
 
