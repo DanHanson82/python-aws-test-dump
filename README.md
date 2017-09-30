@@ -8,6 +8,10 @@ Take a look at the tests in the project to get an idea how to use for testing.  
 
 This isn't meant to be a backup tool and won't handle large amounts of data.
 
+## Installation
+
+This isn't on PyPI yet but it can be pip installed using the url from this repo.  Debating if this is worth publishing or not.  More for my personal use at the moment.
+
 ## Usage
 
 ### dynamo schema
