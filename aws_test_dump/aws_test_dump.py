@@ -56,21 +56,23 @@ DYNAMO_TABLE_FIELDS = (
 
 
 def keep_keys(key_names, obj):
-    if isinstance(obj, dict):
+    if hasattr(obj, 'items') or hasattr(obj, 'iteritems'):
         return {
             k: keep_keys(key_names, v)
             for k, v in six.iteritems(obj) if k in key_names
         }
-    elif isinstance(obj, list):
+    elif hasattr(obj, '__iter__'):
         return [keep_keys(key_names, i) for i in obj]
     else:
         return obj
 
 
 def cast_decimals(obj):
-    if isinstance(obj, dict):
+    if hasattr(obj, 'items') or hasattr(obj, 'iteritems'):
         return {k: cast_decimals(v) for k, v in six.iteritems(obj)}
-    elif isinstance(obj, list):
+    elif hasattr(obj, '__iter__'):
+        if isinstance(obj, set):
+            obj = list(obj)
         return [cast_decimals(i) for i in obj]
     elif isinstance(obj, decimal.Decimal):
         return float(obj)
