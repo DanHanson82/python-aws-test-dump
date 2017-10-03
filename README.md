@@ -6,6 +6,12 @@ Generally you will want to do a dump of some production data for fixtures to use
 
 Take a look at the tests in the project to get an idea how to use for testing.  This isn't meant to be a backup tool and won't handle large amounts of data.
 
+Currently, this has only been testing with python 2.7 but looking to add python 3 support in the near future.  Looking to add S3 dump and restore as well.
+
+## Installation
+
+`pip install aws_test_dump`
+
 ## Usage
 
 ### dynamo schema
