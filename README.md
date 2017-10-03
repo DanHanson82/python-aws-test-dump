@@ -127,6 +127,11 @@ pip-compile requirements.in
 
 ### Running Tests
 
+Tests are currently broken because of this issue with moto:
+https://github.com/spulec/moto/issues/1043
+
+I may have to move to using docker-compose and local dynamo container
+
 I'm using pytest so to run tests, just:
 
 `py.test`
