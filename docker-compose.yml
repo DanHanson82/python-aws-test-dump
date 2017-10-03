@@ -1,0 +1,29 @@
+version: "3"
+services:
+  test:
+    build: .
+    command: py.test -s
+    entrypoint: ''
+    depends_on:
+      - dynamo
+    volumes:
+      - .:/opt
+    environment:
+      - DYNAMO_ENDPOINT=http://dynamo:5000
+      - AWS_ACCESS_KEY_ID=fakeid
+      - AWS_SECRET_ACCESS_KEY=fakekey
+      - AWS_DEFAULT_REGION=us-west-2
+    networks:
+      - fake-aws
+
+  dynamo:
+    image: fingershock/dynamodb-local
+    command: -inMemory -port 5000
+    ports:
+      - "5000:5000"
+    networks:
+      - fake-aws
+
+networks:
+  fake-aws:
+    driver: bridge

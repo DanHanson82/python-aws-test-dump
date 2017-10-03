@@ -4,13 +4,7 @@
 
 Generally you will want to do a dump of some production data for fixtures to use in tests and make sure you aren't hitting production when using any of the restore classes or commands.
 
-Take a look at the tests in the project to get an idea how to use for testing.  I'm using moto to mock aws with pytest which is fantastic!
-
-This isn't meant to be a backup tool and won't handle large amounts of data.
-
-## Installation
-
-This isn't on PyPI yet but it can be pip installed using the url from this repo.  Debating if this is worth publishing or not.  More for my personal use at the moment.
+Take a look at the tests in the project to get an idea how to use for testing.  This isn't meant to be a backup tool and won't handle large amounts of data.
 
 ## Usage
 
@@ -127,15 +121,20 @@ pip-compile requirements.in
 
 ### Running Tests
 
-Tests are currently broken because of this issue with moto:
+I have moved to docker-compose and local dynamo from moto due to the following issue.
+
 https://github.com/spulec/moto/issues/1043
 
-I may have to move to using docker-compose and local dynamo container
 
-I'm using pytest so to run tests, just:
+To run tests, just:
 
-`py.test`
+`docker-compose build`
+`docker-compose run test`
 
 for html coverage:
 
 `coverage html`
+
+or
+
+`docker-compose run test coverage html` to run inside the container

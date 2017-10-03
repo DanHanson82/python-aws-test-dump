@@ -14,7 +14,7 @@ TEST_DUMP_FILE = os.path.join(TEST_DUMP_DIR, 'dynamo_schema.json')
 TEST_DUMP_DYNAMO = os.path.join(TEST_DUMP_DIR, 'dynamo')
 
 
-def test_dump(dynamo_fixture):
+def test_dump():
     # TODO: clean these up and make some more useful assertions
     a = aws_test_dump.DynamoSchemaRestore(DYNAMO_SCHEMA_FILE)
     a.run()
@@ -38,7 +38,7 @@ def test_dump(dynamo_fixture):
     a.run()
 
 
-def test_restore(dynamo_fixture):
+def test_restore():
     # TODO: clean these up and make some more useful assertions
     a = aws_test_dump.DynamoSchemaRestore(TEST_DUMP_FILE)
     a.run()
