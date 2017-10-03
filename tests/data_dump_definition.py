@@ -1,15 +1,16 @@
-from boto3.dynamodb.conditions import Key
 
 
 DATA_DUMP_DEFINITION = [
     {
         'TableName': 'some_table_name',
-        'KeyConditionExpression': Key('user_name').eq('chorizo'),
+        'KeyConditionExpression': 'user_name = :user_name',
+        'ExpressionAttributeValues': {":user_name": {'S': 'chorizo'}},
         'replace_first': {'user_name': {'S': 'chorizo'}},
     },
     {
         'TableName': 'some_other_table',
-        'KeyConditionExpression': Key('another_id').eq('fake'),
+        'KeyConditionExpression': 'another_id = :another_id',
+        'ExpressionAttributeValues': {":another_id": {'S': 'fake'}},
         'replace_these': {
             'user_email': {'S': 'dan@dan.com'},
         },

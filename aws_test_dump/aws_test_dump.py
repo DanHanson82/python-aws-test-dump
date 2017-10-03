@@ -75,7 +75,7 @@ def cast_decimals(obj):
             obj = list(obj)
         return [cast_decimals(i) for i in obj]
     elif isinstance(obj, decimal.Decimal):
-        return float(obj)
+        return str(obj)
     else:
         return obj
 
@@ -195,7 +195,6 @@ class DynamoTableDump(BaseDynamoData):
         super(DynamoTableDump, self).__init__(data_dump_dir, dump_file, dynamo_kwargs)
         self.data_dump_definition = data_dump_definition or {}
         self.table_name = self.data_dump_definition.get('TableName') or table_name
-        self.table = DYNAMODB_RESOURCE.Table(self.table_name)
         self._query_results = None
 
     def get_default_dump_file(self):
@@ -216,13 +215,15 @@ class DynamoTableDump(BaseDynamoData):
             json.dump(data, fout, indent=2, sort_keys=True, encoding='utf-8')
 
     def _query(self):
-        return self.table.query(
+        return self.dynamo_client.query(
             TableName=self.table_name,
-            KeyConditionExpression=self.data_dump_definition.get('KeyConditionExpression')
+            KeyConditionExpression=self.data_dump_definition.get('KeyConditionExpression'),
+            ExpressionAttributeValues=self.data_dump_definition.get('ExpressionAttributeValues', {}),
+            ExpressionAttributeNames=self.data_dump_definition.get('ExpressionAttributeNames', {}),
         )
 
     def _scan(self):
-        return self.dynamo_client.scan(TableName=self.table_name)['Items']
+        return self.dynamo_client.scan(TableName=self.table_name)
 
     @property
     def query_results(self):
