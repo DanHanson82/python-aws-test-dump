@@ -219,7 +219,7 @@ class DynamoTableDump(BaseDynamoData):
             TableName=self.table_name,
             KeyConditionExpression=self.data_dump_definition.get('KeyConditionExpression'),
             ExpressionAttributeValues=self.data_dump_definition.get('ExpressionAttributeValues', {}),
-            ExpressionAttributeNames=self.data_dump_definition.get('ExpressionAttributeNames', {}),
+            #ExpressionAttributeNames=self.data_dump_definition.get('ExpressionAttributeNames', {}),
         )
 
     def _scan(self):
