@@ -5,7 +5,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='aws_test_dump',
-    version='0.1.0',
+    version='0.2.0',
     description='simple script for dumping and restoring aws test data for local testing',
     url='https://github.com/DanHanson82/python-aws-test-dump',
     author='Daniel Hanson',
