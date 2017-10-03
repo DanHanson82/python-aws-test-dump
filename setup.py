@@ -16,7 +16,7 @@ setup(
     classifiers=[
         # looking to test on 3 but currently working with 2.7
         'Programming Language :: Python :: 2.7',
-    ]
+    ],
     install_requires=[
         "boto3",
         "six",
